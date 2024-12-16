@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Form</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Reset Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+      }
+
+      .contact-container {
+        display: flex;
+        gap: 20px;
+        max-width: 900px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      /* Left Section */
+      .contact-info {
+        width: 40%;
+        background-color: #fff;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+      }
+
+      .info-block {
+        margin-bottom: 20px;
+      }
+
+      .icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .red-icon {
+        color: #e63946;
+      }
+
+      h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 14px;
+        color: #555;
+      }
+
+      hr {
+        border: none;
+        height: 1px;
+        background-color: #ddd;
+        margin: 10px 0;
+      }
+
+      /* Right Section */
+      .contact-form {
+        width: 60%;
+        padding: 20px;
+      }
+
+      .form-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .form-row input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        resize: none;
+      }
+
+      .send-button {
+        background-color: #e63946;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .send-button:hover {
+        background-color: #d62839;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contact-container">
+      <!-- Left Section -->
+      <div class="contact-info">
+        <div class="info-block">
+          <div class="icon red-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <h3>Call To Us</h3>
+          <p>We are available 24/7, 7 days a week.</p>
+          <p>Phone: +8801611112222</p>
+        </div>
+        <hr />
+        <div class="info-block">
+          <div class="icon red-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3>Write To US</h3>
+          <p>Fill out our form and we will contact you within 24 hours.</p>
+          <p>Emails: customer@exclusive.com</p>
+          <p>Emails: support@exclusive.com</p>
+        </div>
+      </div>
+
+      <!-- Right Section -->
+      <div class="contact-form">
+        <form>
+          <div class="form-row">
+            <input type="text" placeholder="Your Name *" required />
+            <input type="email" placeholder="Your Email *" required />
+            <input type="tel" placeholder="Your Phone *" required />
+          </div>
+          <div class="form-message">
+            <textarea placeholder="Your Message" rows="6"></textarea>
+          </div>
+          <button type="submit" class="send-button">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

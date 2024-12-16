@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Card</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+      }
+
+      .product-container {
+        display: flex;
+        background: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        max-width: 900px;
+        width: 100%;
+      }
+
+      .image-gallery {
+        flex: 1;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+      }
+
+      .thumbnails {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+      }
+
+      .thumbnail:hover {
+        border-color: #007bff;
+      }
+
+      .main-image {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+
+      .product-info {
+        flex: 1.5;
+        padding: 20px;
+      }
+
+      .product-title {
+        font-size: 24px;
+        margin: 0 0 10px;
+      }
+
+      .rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+
+      .rating .stars {
+        color: gold;
+      }
+
+      .price {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .stock-status {
+        color: green;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        margin-bottom: 20px;
+      }
+
+      .options {
+        margin-bottom: 20px;
+      }
+
+      .option-label {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .color-option {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+      }
+
+      .size-option {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .size-option:hover {
+        background: #007bff;
+        color: #fff;
+      }
+
+      .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .quantity-selector button {
+        width: 30px;
+        height: 30px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .quantity-selector button:hover {
+        background: #0056b3;
+      }
+
+      .buy-now {
+        padding: 10px 20px;
+        background: #ff4b4b;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .buy-now:hover {
+        background: #cc0000;
+      }
+
+      .additional-info {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .info-block {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="product-container">
+      <div class="image-gallery">
+        <div class="thumbnails">
+          <img
+            src="https://res.cloudinary.com/dihhw7jo1/image/upload/v1734257169/products/download%20%284%29.jpg.jpg"
+            class="thumbnail"
+            alt="Thumbnail 1"
+          />
+          <img
+            src="https://res.cloudinary.com/dihhw7jo1/image/upload/v1734257169/products/download%20%284%29.jpg.jpg"
+            class="thumbnail"
+            alt="Thumbnail 2"
+          />
+          <img
+            src="https://res.cloudinary.com/dihhw7jo1/image/upload/v1734257169/products/download%20%284%29.jpg.jpg"
+            class="thumbnail"
+            alt="Thumbnail 3"
+          />
+          <img
+            src="https://res.cloudinary.com/dihhw7jo1/image/upload/v1734257169/products/download%20%284%29.jpg.jpg"
+            class="thumbnail"
+            alt="Thumbnail 4"
+          />
+        </div>
+        <img
+          src="https://res.cloudinary.com/dihhw7jo1/image/upload/v1734257169/products/download%20%284%29.jpg.jpg"
+          class="main-image"
+          alt="Main Image"
+        />
+      </div>
+
+      <div class="product-info">
+        <h1 class="product-title">Havic HV G-92 Gamepad</h1>
+        <div class="rating">
+          <div class="stars">⭐⭐⭐⭐</div>
+          <div>(150 Reviews)</div>
+        </div>
+        <div class="price">$192.00</div>
+        <div class="stock-status">In Stock</div>
+        <div class="description">
+          PlayStation 5 Controller Skin High quality vinyl with air channel
+          adhesive for easy bubble free install & mess free removal Pressure
+          sensitive.
+        </div>
+
+        <div class="options">
+          <div>
+            <span class="option-label">Colours:</span>
+            <span class="color-option" style="background-color: #ffffff"></span>
+            <span class="color-option" style="background-color: #ff4b4b"></span>
+          </div>
+          <div>
+            <span class="option-label">Size:</span>
+            <span class="size-option">XS</span>
+            <span class="size-option">S</span>
+            <span class="size-option">M</span>
+            <span class="size-option">L</span>
+            <span class="size-option">XL</span>
+          </div>
+        </div>
+
+        <div class="quantity-selector">
+          <button>-</button>
+          <span>2</span>
+          <button>+</button>
+        </div>
+
+        <button class="buy-now">Buy Now</button>
+
+        <div class="additional-info">
+          <div class="info-block">
+            <strong>Free Delivery</strong>
+            <p>Enter your postal code for Delivery Availability</p>
+          </div>
+          <div class="info-block">
+            <strong>Return Delivery</strong>
+            <p>Free 30 Days Delivery Returns. Details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
