@@ -3,10 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   closeCartSidebar,
-  getCart,
-  updateQuantity,
-  deleteCartItem,
-  clearSelectedItems,
 } from "../../redux/slices/cartSlice";
 import {
   setOrderItems,

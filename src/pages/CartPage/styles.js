@@ -42,10 +42,21 @@ export const ProductName = styled.span`
 `;
 
 // Giá sản phẩm
-export const ProductPrice = styled.span`
-  font-size: 1em;
-  font-weight: bold;
-  color: #e91e63;
+export const ProductPrice = styled.div`
+  margin: 10px 0;
+  font-size: 1.2em;
+
+  span {
+    color: #ff6f61;
+    font-weight: bold;
+  }
+
+  small {
+    margin-left: 10px;
+    font-size: 0.9em;
+    text-decoration: line-through;
+    color: #999;
+  }
 `;
 
 // Số lượng sản phẩm

@@ -20,6 +20,19 @@ const CartItem = ({
   handleQuantityChange,
   handleRemoveItem,
 }) => {
+  console.log(item);
+  const now = new Date();
+  const { price, discount, discountStartDate, discountEndDate, images, name } =
+    item.product;
+  const isDiscountValid =
+    discount &&
+    new Date(discountStartDate) <= now &&
+    new Date(discountEndDate) >= now;
+
+  const discountedPrice = isDiscountValid
+    ? price - (price * discount) / 100
+    : price;
+
   return (
     <CartItemContainer key={item.product._id}>
       <SelectItemCheckbox
@@ -32,10 +45,15 @@ const CartItem = ({
       </RemoveButton>
       <ProductImage src={item.product.images[0]} alt={item.product.name} />
       <ProductName>{item.product.name}</ProductName>
-      <ProductPrice>${item.product.price}</ProductPrice>
+      <ProductPrice>
+        <span>${discountedPrice.toFixed(2)}</span>{" "}
+        {isDiscountValid && <small>${price.toFixed(2)}</small>}
+      </ProductPrice>
+
       <ProductSubtotal>
-        ${item.product.price * quantities[index]}
+        ${discountedPrice.toFixed(2) * quantities[index]}
       </ProductSubtotal>
+
       <ProductQuantity
         type="number"
         min="1"

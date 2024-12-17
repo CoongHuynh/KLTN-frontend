@@ -1,4 +1,11 @@
-import React, { useRef, useImperativeHandle } from "react";
+import React, { useRef, useImperativeHandle, useEffect, useState } from "react";
+import {
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+} from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import ProductCart from "../../components/ProductComponent/ProductCart";
 import ArrowButtons from "./ArrowButtons";
 import {
@@ -10,7 +17,12 @@ import {
 
 const ProductGrid = React.forwardRef(({ products, favorites }, ref) => {
   const gridRef = useRef();
-
+  const [remainingTime, setRemainingTime] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   useImperativeHandle(ref, () => ({
     scrollLeft: () => {
       if (gridRef.current) {
@@ -24,6 +36,23 @@ const ProductGrid = React.forwardRef(({ products, favorites }, ref) => {
     },
   }));
 
+  useEffect(() => {
+    const targetDate = new Date("2024-12-26T23:59:59+07:00");
+    const updateRemainingTime = () => {
+      const now = new Date();
+      const zonedNow = toZonedTime(now, "Asia/Ho_Chi_Minh");
+      const days = differenceInDays(targetDate, now);
+      const hours = differenceInHours(targetDate, now) % 24;
+      const minutes = differenceInMinutes(targetDate, now) % 60;
+      const seconds = differenceInSeconds(targetDate, now) % 60;
+      setRemainingTime({ days, hours, minutes, seconds });
+    };
+
+    updateRemainingTime();
+    const intervalId = setInterval(updateRemainingTime, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
   return (
     <div style={{ position: "relative", marginTop: "40px" }}>
       <Header>
@@ -33,19 +62,19 @@ const ProductGrid = React.forwardRef(({ products, favorites }, ref) => {
         </div>
         <Countdown>
           <CountdownItem>
-            <span>03</span>
+            <span>{String(remainingTime.days).padStart(2, "0")}</span>
             <small>Days</small>
           </CountdownItem>
           <CountdownItem>
-            <span>23</span>
+            <span>{String(remainingTime.hours).padStart(2, "0")}</span>
             <small>Hours</small>
           </CountdownItem>
           <CountdownItem>
-            <span>19</span>
+            <span>{String(remainingTime.minutes).padStart(2, "0")}</span>
             <small>Minutes</small>
           </CountdownItem>
           <CountdownItem>
-            <span>56</span>
+            <span>{String(remainingTime.seconds).padStart(2, "0")}</span>
             <small>Seconds</small>
           </CountdownItem>
           <ArrowButtons

@@ -18,13 +18,13 @@ import {
 import { getFavorites } from "../../redux/slices/favoriteSlice";
 import { getCart } from "../../redux/slices/cartSlice";
 import Roadmap from "../../components/RoadmapComponent/Roadmap";
-import FlashSale from "../../components/QuickviewComponent/QuickView";
 import ProductGrid from "./ProductGrid";
 import ProductListSection from "./ProductListSection";
 import CategorySection from "./CategorySection";
 import FeatureSection from "../../components/FeatureComponent/FeatrureSection";
 import ChatBotButton from "../../components/ChatBot/ChatBotButton";
 import { TopBanner } from "./style";
+
 const HomePage = () => {
   const dispatch = useDispatch();
   const gridRef = useRef();
@@ -43,13 +43,17 @@ const HomePage = () => {
     totalPages,
   } = useSelector((state) => state.products);
   const { favorites } = useSelector((state) => state.favorites) || {};
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getFavorites());
-    dispatch(fetchProducts());
-    dispatch(getCart());
-    dispatch(fetchTopProductsByViews(10));
-  }, [dispatch]);
+    const loadInitialData = async () => {
+      await dispatch(getFavorites());
+      await dispatch(fetchProducts());
+      await dispatch(getCart());
+      await dispatch(fetchTopProductsByViews(10));
+    };
+    loadInitialData();
+  }, [dispatch, user]);
 
   useEffect(() => {
     dispatch(fetchFilterProduct({ page: currentPage, limit: productsPerPage }));
@@ -82,13 +86,22 @@ const HomePage = () => {
     () => localFeaturedProducts,
     [localFeaturedProducts]
   );
+  if (!favorites) {
+    alert("Please login to view this page");
+  }
+
   const memoizedFavorites = useMemo(() => favorites, [favorites]);
   console.log(memoizedFavorites);
   console.log(memoizedFilterProducts);
   console.log(memoizedTopProducts);
+
   return (
     <div>
-      {loading && <div className="loading"></div>}
+      {loading && (
+        <div className="loading">
+          <div></div>
+        </div>
+      )}
       {error && <p>{error}</p>}
       <Roadmap />
       <ChatBotButton />
@@ -112,7 +125,6 @@ const HomePage = () => {
           products={memoizedTopProducts}
           favorites={memoizedFavorites}
         />
-        <FlashSale />
         <FeatureSection />
       </div>
     </div>

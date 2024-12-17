@@ -112,6 +112,16 @@ export const CancelButton = styled.button`
     border-color: #333;
   }
 `;
+export const StarsContainer = styled.div`
+  display: flex;
+  width: 10px;
+  gap: 2px;
+`;
+
+export const Star = styled.img`
+  width: 15px;
+  height: 15px;
+`;
 
 export const OrderContainer = styled.div`
   background-color: #fff;
@@ -145,7 +155,7 @@ export const ProductInfo = styled.div`
   align-items: center;
   padding: 20px 0;
 
-  img {
+  > img {
     width: 80px;
     height: 80px;
     margin-right: 20px;
@@ -197,9 +207,11 @@ export const Button = styled.button`
   background-color: #f56b2a;
   color: #fff;
   font-weight: bold;
-
+  &cancel-btn {
+    background-color: #f56b2a;
+  }
   &.review-btn {
-    background-color: #ff5722;
+    background-color: #007bff;
   }
 
   &.reorder-btn {
@@ -220,4 +232,38 @@ export const StatusBadge = styled.span`
     status === "HOÀN THÀNH" ? "#4caf50" : "#f44336"};
   color: #fff;
   font-weight: bold;
+`;
+
+export const ReviewForm = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const ReviewTextarea = styled.textarea`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  &:focus {
+    border-color: #007bff;
+  }
+`;
+
+export const SubmitReviewButton = styled.button`
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background-color: #218838;
+  }
 `;

@@ -10,80 +10,8 @@ import {
 import { MyProfile, AddressBook, PaymentOptions } from "./Account";
 import OrderListComponent from "./Order";
 import { updateProfile } from "../../redux/slices/orderSlice";
-import { useDispatch } from "react-redux";
-
-
-const ordersData = [
-  {
-    status: "processing",
-    product: [
-      {
-        name: "Mô hình con chuột",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-      {
-        name: "Mô hình toy con chuột cao su",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-    ],
-    total: "29.000",
-    createdAt: "2021-09-01",
-  },
-  {
-    status: "processing",
-    product: [
-      {
-        name: "Mô hình con chuột",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-      {
-        name: "Mô hình toy con chuột cao su",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-    ],
-    total: "29.000",
-    createdAt: "2021-09-01",
-  },
-  {
-    status: "shipped",
-    product: [
-      {
-        name: "Mô hình con chuột giả trang trí halloween, đồ chơi cho bé, trẻ em, toy con chuột cao su",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-      {
-        name: "Mô hình con chuột giả trang trí halloween, đồ chơi cho bé, trẻ em, toy con chuột cao su",
-        price: "15.000",
-        stock: "12",
-        ratings: "0",
-        image:
-          "https://res.cloudinary.com/dihhw7jo1/image/upload/v1727766681/products/laptop%20asus%20vivobook%203.jpg.jpg",
-      },
-    ],
-    total: "29.000",
-    createdAt: "2021-09-01",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrdersByUserId } from "../../redux/slices/orderSlice";
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({
@@ -96,6 +24,8 @@ const ProfilePage = () => {
     confirmPassword: "",
   });
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { orders } = useSelector((state) => state.orders);
 
   const [selectedItem, setSelectedItem] = useState("My Profile");
 
@@ -112,18 +42,17 @@ const ProfilePage = () => {
       console.error("Error saving profile:", error);
     }
   };
-
-  const [orders, setOrders] = useState([]);
-
   useEffect(() => {
-    // Simulate fetching data from an API
-    setOrders(ordersData);
-  }, []);
-
+    if (user) {
+      dispatch(fetchOrdersByUserId(user.id));
+    }
+  }, [dispatch, user]);
+  console.log(orders);
   const renderForm = () => {
     const filteredOrders = orders.filter(
       (order) => order.status === selectedItem.toLowerCase()
     );
+    console.log(filteredOrders);
     switch (selectedItem) {
       case "My Profile":
         return (
@@ -140,7 +69,7 @@ const ProfilePage = () => {
       case "Processing":
       case "Shipped":
       case "Cancelled":
-      case "Returned":
+      case "awaiting_payment":
         return (
           <OrderListComponent title={selectedItem} orders={filteredOrders} />
         );
@@ -187,6 +116,12 @@ const ProfilePage = () => {
           <SidebarGroup>
             <h4>My Orders</h4>
             <SidebarItem
+              className={selectedItem === "awaiting_payment" ? "active" : ""}
+              onClick={() => setSelectedItem("awaiting_payment")}
+            >
+              Awaiting Payment
+            </SidebarItem>
+            <SidebarItem
               className={selectedItem === "Processing" ? "active" : ""}
               onClick={() => setSelectedItem("Processing")}
             >
@@ -203,12 +138,6 @@ const ProfilePage = () => {
               onClick={() => setSelectedItem("Cancelled")}
             >
               Cancelled
-            </SidebarItem>
-            <SidebarItem
-              className={selectedItem === "Returned" ? "active" : ""}
-              onClick={() => setSelectedItem("Returned")}
-            >
-              Returned
             </SidebarItem>
           </SidebarGroup>
 

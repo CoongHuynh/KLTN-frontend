@@ -1,16 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  FormWrapper,
-  Title,
-  Button,
-  Container,
-} from "../../pages/LoginPage/styles";
+import { FormWrapper, Title, Container } from "../../pages/LoginPage/styles";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import { activateAccount } from "../../redux/slices/verifySlice";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
+import Swal from "sweetalert2";
 const ActivateForm = () => {
   const { token } = useParams();
   const dispatch = useDispatch();
@@ -36,15 +31,17 @@ const ActivateForm = () => {
   useEffect(() => {
     if (error) {
       if (error === "This email is already activated") {
-        alert("Your account is already activated.");
+        Swal.fire("Info", "Your account is already activated.", "info");
       } else if (
         error === "Token expired. A new activation email has been sent."
       ) {
-        alert(
-          "Token has expired. A new activation email has been sent to your email."
+        Swal.fire(
+          "Info",
+          "Token has expired. A new activation email has been sent to your email.",
+          "info"
         );
       } else {
-        console.log(error);
+        Swal.fire("Error", error, "error");
       }
     }
   }, [error]);

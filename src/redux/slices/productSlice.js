@@ -68,7 +68,7 @@ export const fetchTopProductsByViews = createAsyncThunk(
   async (limit, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/product/top-lviews`,
+        `${process.env.REACT_APP_BACKEND_URL}/product/top-views`,
         { params: { limit } }
       );
       return data;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import Roadmap from "../../components/RoadmapComponent/Roadmap";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import {
@@ -20,6 +19,8 @@ import {
   fetchOrdersByUserId,
   getOrderDetails,
 } from "../../redux/slices/orderSlice";
+import { getCart } from "../../redux/slices/cartSlice";
+import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 
 const initialOptions = {
@@ -44,19 +45,32 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const user = useSelector((state) => state.auth.user);
-  const orderSummary = useSelector((state) => state.orders.order);
+  const { orders, order, loading, error } = useSelector(
+    (state) => state.orders
+  );
 
+  console.log("Order List: ", orders);
+  console.log("Order Summary: ", order);
   useEffect(() => {
-    if (user && user._id) {
-      dispatch(fetchOrdersByUserId(user._id));
-    }
+    const fetchOrders = async () => {
+      await dispatch(getCart());
+      if (user) {
+        const resultAction = await dispatch(fetchOrdersByUserId(user.id));
+        const orders = resultAction.payload;
+        if (orders.length > 0) {
+          const lastOrderId = orders[orders.length - 1]._id;
+          dispatch(getOrderDetails(lastOrderId));
+        }
+      }
+    };
+    fetchOrders();
   }, [dispatch, user]);
 
   useEffect(() => {
-    if (orderId && (!orderSummary || orderSummary._id !== orderId)) {
+    if (orderId && (!order || order._id !== orderId)) {
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId, orderSummary]);
+  }, [dispatch, orderId, order]);
 
   useEffect(() => {
     const userData = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {};
@@ -95,7 +109,7 @@ const CheckoutPage = () => {
 
   const calculateSubtotal = () => {
     return (
-      orderSummary?.items?.reduce(
+      order?.items?.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
       ) || 0
@@ -103,7 +117,7 @@ const CheckoutPage = () => {
   };
 
   const calculateTotal = () => {
-    return calculateSubtotal() + (orderSummary?.shipping || 0);
+    return calculateSubtotal() + (order?.shipping || 0);
   };
 
   const handlePlaceOrder = async () => {
@@ -111,26 +125,36 @@ const CheckoutPage = () => {
       const shippingAddress = `${formData.streetAddress}, ${formData.city}, ${formData.country}`;
       await dispatch(
         updateOrder({
-          id: orderSummary._id,
+          id: order._id,
           shipping_address: shippingAddress,
-          items: orderSummary.items,
+          items: order.items,
           payment_status: "completed",
+          method: paymentCOD ? "cod" : "paypal",
         })
       );
       setOrderSuccess(true);
-      navigate("/success");
+      Swal.fire({
+        title: "Order Placed Successfully!",
+        text: "Your order has been placed and is being processed.",
+        icon: "success",
+        confirmButtonText: "Back to Home",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+        }
+      });
     } catch (error) {
       console.error("Failed to place order:", error);
     }
   };
 
-  if (!orderSummary) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <Roadmap />
+      {!order && (
+        <div className="loading">
+          <div></div>
+        </div>
+      )}
       <CheckoutContainer>
         <BillingDetails>
           <h2>Billing Details</h2>
@@ -200,8 +224,8 @@ const CheckoutPage = () => {
         </BillingDetails>
         <OrderSummary>
           <h3>Order Summary</h3>
-          {orderSummary?.items?.length > 0 ? (
-            orderSummary.items.map((item, index) => (
+          {order?.items?.length > 0 ? (
+            order.items.map((item, index) => (
               <SummaryItem key={index}>
                 <span>{item?.product_id?.name}</span>
                 <span>X {item?.quantity}</span>
@@ -217,7 +241,7 @@ const CheckoutPage = () => {
           </SummaryItem>
           <SummaryItem>
             <span>Shipping:</span>
-            <span>{orderSummary?.shipping}</span>
+            <span>{order?.shipping}</span>
           </SummaryItem>
           <SummaryItem>
             <span>Total:</span>

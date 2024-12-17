@@ -76,10 +76,7 @@ const HeaderComponent = () => {
     };
   }, []);
 
-  const totalItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const totalItems = cartItems.length;
 
   return (
     <HeaderContainer>

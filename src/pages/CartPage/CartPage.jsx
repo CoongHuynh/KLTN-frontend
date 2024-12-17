@@ -92,17 +92,47 @@ const CartPage = () => {
     return selectedItems.reduce((acc, index) => {
       const item = items[index];
       if (item && item.product && item.product.price) {
-        return acc + item.product.price * quantities[index];
+        const { price, discount, discountStartDate, discountEndDate } =
+          item.product;
+        const now = new Date();
+        const isDiscountValid =
+          discount &&
+          new Date(discountStartDate) <= now &&
+          new Date(discountEndDate) >= now;
+
+        const discountedPrice = isDiscountValid
+          ? price - (price * discount) / 100
+          : price;
+
+        return acc + discountedPrice * quantities[index];
       }
       return acc;
     }, 0);
   };
+
   const handleCheckout = async () => {
     console.log(selectedItems);
-    const selectedProducts = selectedItems.map((index) => ({
-      product_id: items[index].product._id,
-      quantity: quantities[index],
-    }));
+    const selectedProducts = selectedItems.map((index) => {
+      const item = items[index];
+      const { price, discount, discountStartDate, discountEndDate } =
+        item.product;
+      const now = new Date();
+      const isDiscountValid =
+        discount &&
+        new Date(discountStartDate) <= now &&
+        new Date(discountEndDate) >= now;
+
+      const discountedPrice = isDiscountValid
+        ? price - (price * discount) / 100
+        : price;
+
+      return {
+        product_id: item.product._id,
+        quantity: quantities[index],
+        price: discountedPrice, // Sử dụng giá đã giảm nếu có discount
+      };
+    });
+
     const orderData = {
       items: selectedProducts,
       shipping_address: " ",
@@ -112,6 +142,15 @@ const CartPage = () => {
       const order = await dispatch(createOrder(orderData)).unwrap();
       dispatch(setOrderSummary(order));
       Cookies.set("orderSummary", JSON.stringify(order));
+
+      // Xóa các sản phẩm đã chọn khỏi giỏ hàng
+      for (const index of selectedItems) {
+        const item = items[index];
+        if (item && item._id) {
+          await dispatch(deleteCartItem(item._id));
+        }
+      }
+
       dispatch(clearSelectedItems());
       navigate("/checkout");
     } catch (error) {
@@ -130,7 +169,11 @@ const CartPage = () => {
 
   return (
     <CartContainer>
-      {loading && <div className="loading"></div>}
+      {loading && (
+        <div className="loading">
+          <div></div>
+        </div>
+      )}
       {error && (
         <p>
           Error:{" "}
