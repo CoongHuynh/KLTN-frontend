@@ -78,7 +78,7 @@ export const OrderComponent = ({ item }) => {
 };
 
 const OrderListComponent = ({ title, orders }) => {
-  const [expandedOrderIndex, setExpandedOrderIndex] = useState(null);
+  const [expandedOrderIndex, setExpandedOrderIndex] = useState(0);
   const [reviewingProduct, setReviewingProduct] = useState(null);
   const [reviewText, setReviewText] = useState("");
   const dispatch = useDispatch();
@@ -128,71 +128,62 @@ const OrderListComponent = ({ title, orders }) => {
                 </p>{" "}
                 <StatusBadge status={order.status}>{order.status}</StatusBadge>
               </div>
-              <div className="flex">
-                <Button
-                  className="hide"
-                  onClick={() => toggleOrderDetails(index)}
-                >
-                  {expandedOrderIndex === index ? (
-                    <RiArrowDropUpLine fontSize={40} color="black" />
-                  ) : (
-                    <RiArrowDropDownLine fontSize={40} color="black" />
-                  )}
-                </Button>
-              </div>
+
+              <div className="flex"></div>
             </OrderInfo>
 
-            {expandedOrderIndex === index && (
-              <>
-                {order.items &&
-                  Array.isArray(order.items) &&
-                  order.items.map((item, itemIndex) => (
-                    <div key={itemIndex}>
-                      <OrderComponent item={item} />
-                      {reviewingProduct === item.product_id._id && (
-                        <ReviewForm>
-                          <ReviewTextarea
-                            value={reviewText}
-                            onChange={(e) => setReviewText(e.target.value)}
-                            placeholder="Write your review here..."
-                          />
-                          <SubmitReviewButton
-                            onClick={() =>
-                              handleReviewSubmit(item.product_id._id)
-                            }
-                          >
-                            Submit Review
-                          </SubmitReviewButton>
-                        </ReviewForm>
-                      )}
-                    </div>
-                  ))}
-
-                <OrderActions>
-                  <div className="actions">
-                    {order.status === "shipped" && (
-                      <Button
-                        className="review-btn"
-                        onClick={() =>
-                          setReviewingProduct(order.items[0].product_id._id)
-                        }
-                      >
-                        Đánh Giá
-                      </Button>
-                    )}
-                    <Button className="reorder-btn">Mua Lại</Button>
-                    {order.status === "awaiting_payment" && (
-                      <Button
-                        className="cancel-btn"
-                        onClick={() => handleCancelOrder(order._id)}
-                      >
-                        Hủy Đơn Hàng
-                      </Button>
+            <>
+              {order.items &&
+                Array.isArray(order.items) &&
+                order.items.map((item, itemIndex) => (
+                  <div key={itemIndex}>
+                    <OrderComponent item={item} />
+                    {reviewingProduct === item.product_id._id && (
+                      <ReviewForm>
+                        <ReviewTextarea
+                          value={reviewText}
+                          onChange={(e) => setReviewText(e.target.value)}
+                          placeholder="Write your review here..."
+                        />
+                        <SubmitReviewButton
+                          onClick={() =>
+                            handleReviewSubmit(item.product_id._id)
+                          }
+                        >
+                          Submit Review
+                        </SubmitReviewButton>
+                      </ReviewForm>
                     )}
                   </div>
-                </OrderActions>
-              </>
-            )}
+                ))}
+
+              <OrderActions>
+                <div className="actions">
+                  {order.status === "shipped" && (
+                    <Button
+                      className="review-btn"
+                      onClick={() =>
+                        setReviewingProduct(order.items[0].product_id._id)
+                      }
+                    >
+                      Đánh Giá
+                    </Button>
+                  )}
+                  {order.status === "shipped" ||
+                    (order.status === "cancelled" && (
+                      <Button className="reorder-btn">Mua Lại</Button>
+                    ))}
+                  {order.status === "awaiting_payment" && (
+                    <Button
+                      className="cancel-btn"
+                      onClick={() => handleCancelOrder(order._id)}
+                    >
+                      Hủy Đơn Hàng
+                    </Button>
+                  )}
+                </div>
+              </OrderActions>
+            </>
           </OrderContainer>
         ))}
     </ProfileForm>

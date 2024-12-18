@@ -31,6 +31,7 @@ import {
 } from "./styles";
 import CartItem from "./CartItem";
 import Loading from "../../components/LoadingError/Loading";
+import Swl from "sweetalert2";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -169,20 +170,12 @@ const CartPage = () => {
 
   return (
     <CartContainer>
-      {loading && (
+      {(loading || ordersLoading) && (
         <div className="loading">
           <div></div>
         </div>
       )}
-      {error && (
-        <p>
-          Error:{" "}
-          {error?.message ||
-            error?.toString() ||
-            ordersError?.message ||
-            ordersError?.toString()}
-        </p>
-      )}
+
       <CartHeader>
         <span>Image</span>
         <span>Product</span>
@@ -206,6 +199,55 @@ const CartPage = () => {
             />
           )
       )}
+      {items.length === 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px",
+            marginTop: "20px",
+          }}
+        >
+          <div style={{ flex: "0 0 66%", paddingRight: "20px" }}>
+            <h2>No items in your cart</h2>
+            <p>Return to the shop to start shopping.</p>
+            <button
+              onClick={handleReturnShop}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#007bff",
+                color: "#fff",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Return to Home
+            </button>
+          </div>
+          <div style={{ flex: "0 0 32%" }}>
+            <img
+              src="/path/to/cart-image.png"
+              alt="Empty Cart"
+              style={{ width: "100%", height: "auto" }}
+            />
+          </div>
+        </div>
+      )}
+      {(error || ordersError) &&
+        Swl.fire({
+          icon: "error",
+          title: "Oops...",
+          text:
+            error?.toString() ||
+            ordersError?.message ||
+            ordersError?.toString(),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/");
+          }
+        })}
       <CartActions>
         <ReturnToShopButton onClick={handleReturnShop}>
           Return To Shop

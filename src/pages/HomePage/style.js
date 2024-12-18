@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const TopBanner = styled.div`
-  display: flex;
+  display: block;
+  gap: 20px;
 `;
 
 export const ProductGrid = styled.div`

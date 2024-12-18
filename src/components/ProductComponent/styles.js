@@ -305,3 +305,19 @@ export const Star = styled.img`
   width: 15px;
   height: 15px;
 `;
+export const OutOfStockOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  border-radius: 10px;
+  z-index: 1;
+`;

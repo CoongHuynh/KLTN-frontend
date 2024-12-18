@@ -6,12 +6,19 @@ import {
   SidebarGroup,
   SidebarItem,
   ProfileForm,
+  WishlistContainer,
+  WishlistItem,
+  WishlistImage,
+  WishlistDetails,
+  WishlistName,
+  WishlistPrice,
 } from "./styles";
 import { MyProfile, AddressBook, PaymentOptions } from "./Account";
 import OrderListComponent from "./Order";
 import { updateProfile } from "../../redux/slices/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrdersByUserId } from "../../redux/slices/orderSlice";
+import { getFavorites } from "../../redux/slices/favoriteSlice"; // Import action để lấy danh sách sản phẩm yêu thích
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({
@@ -26,6 +33,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { orders } = useSelector((state) => state.orders);
+  const { favorites } = useSelector((state) => state.favorites); // Lấy danh sách sản phẩm yêu thích từ state
 
   const [selectedItem, setSelectedItem] = useState("My Profile");
 
@@ -45,6 +53,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       dispatch(fetchOrdersByUserId(user.id));
+      dispatch(getFavorites());
     }
   }, [dispatch, user]);
   console.log(orders);
@@ -52,7 +61,6 @@ const ProfilePage = () => {
     const filteredOrders = orders.filter(
       (order) => order.status === selectedItem.toLowerCase()
     );
-    console.log(filteredOrders);
     switch (selectedItem) {
       case "My Profile":
         return (
@@ -77,6 +85,46 @@ const ProfilePage = () => {
         return (
           <ProfileForm>
             <h2>My WishList</h2>
+            <WishlistContainer>
+              {favorites.map((product) => {
+                const now = new Date();
+                const isDiscountValid =
+                  product.discount &&
+                  new Date(product.discountStartDate) <= now &&
+                  new Date(product.discountEndDate) >= now;
+                const discountedPrice = isDiscountValid
+                  ? product.price - (product.price * product.discount) / 100
+                  : product.price;
+
+                return (
+                  <WishlistItem key={product._id}>
+                    <WishlistImage src={product.images[0]} alt={product.name} />
+                    <WishlistDetails>
+                      <WishlistName>{product.name}</WishlistName>
+                      <WishlistPrice>
+                        {isDiscountValid ? (
+                          <>
+                            <span
+                              style={{
+                                textDecoration: "line-through",
+                                color: "#999",
+                              }}
+                            >
+                              ${product.price.toFixed(2)}
+                            </span>{" "}
+                            <span style={{ color: "#e91e63" }}>
+                              ${discountedPrice.toFixed(2)}
+                            </span>
+                          </>
+                        ) : (
+                          <span>${product.price.toFixed(2)}</span>
+                        )}
+                      </WishlistPrice>
+                    </WishlistDetails>
+                  </WishlistItem>
+                );
+              })}
+            </WishlistContainer>
           </ProfileForm>
         );
       default:
@@ -98,18 +146,6 @@ const ProfilePage = () => {
               onClick={() => setSelectedItem("My Profile")}
             >
               My Profile
-            </SidebarItem>
-            <SidebarItem
-              className={selectedItem === "Address Book" ? "active" : ""}
-              onClick={() => setSelectedItem("Address Book")}
-            >
-              Address Book
-            </SidebarItem>
-            <SidebarItem
-              className={selectedItem === "My Payment Options" ? "active" : ""}
-              onClick={() => setSelectedItem("My Payment Options")}
-            >
-              My Payment Options
             </SidebarItem>
           </SidebarGroup>
 

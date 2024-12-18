@@ -22,6 +22,7 @@ import {
   Alert,
   StarsContainer,
   Star,
+  OutOfStockOverlay,
 } from "./styles";
 
 const ProductCart = ({ product, favorited }) => {
@@ -29,8 +30,6 @@ const ProductCart = ({ product, favorited }) => {
   const dispatch = useDispatch();
 
   const [isFavorited, setIsFavorited] = useState(favorited);
-  const [showAlert, setShowAlert] = useState(false);
-  console.log("favorited", favorited);
   useEffect(() => {
     if (!product) {
       dispatch(fetchProductById(product));
@@ -54,6 +53,7 @@ const ProductCart = ({ product, favorited }) => {
     originalPrice,
     images,
     ratings,
+    stock,
     numberOfReviews,
     discount,
     discountStartDate,
@@ -115,18 +115,9 @@ const ProductCart = ({ product, favorited }) => {
 
   return (
     <>
-      {showAlert && (
-        <AlertContainer>
-          <Alert severity="success">
-            <IoMdCheckmarkCircleOutline />
-            <p>Product added to cart successfully!</p>
-          </Alert>
-        </AlertContainer>
-      )}
       <ProductCardContainer onClick={handleCardClick}>
         <ProductImage>
           {isDiscountValid && <DiscountBadge>{`-${discount}%`}</DiscountBadge>}
-
           <ProductActionIcons>
             <ActionIcon onClick={handleFavoriteClick}>
               {!isFavorited ? (
@@ -142,7 +133,7 @@ const ProductCart = ({ product, favorited }) => {
               )}
             </ActionIcon>
           </ProductActionIcons>
-
+          {stock === 0 && <OutOfStockOverlay>Out of Stock</OutOfStockOverlay>}
           <Image
             src={
               images && images.length > 0

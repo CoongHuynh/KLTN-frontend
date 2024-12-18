@@ -1,15 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  closeCartSidebar,
-} from "../../redux/slices/cartSlice";
+import { closeCartSidebar } from "../../redux/slices/cartSlice";
 import {
   setOrderItems,
   createOrder,
   setOrderSummary,
 } from "../../redux/slices/orderSlice";
 import Cookies from "js-cookie";
+import Swl from "sweetalert2";
 import {
   SidebarWrapper,
   SidebarHeader,
@@ -27,9 +26,13 @@ import {
 const CartSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.cart.isOpen);
-  const cartItems = useSelector((state) => state.cart.items);
-  const totalPrice = useSelector((state) => state.cart.total_price);
+  const {
+    isOpen,
+    items: cartItems,
+    total_price: totalPrice,
+    loading,
+    error,
+  } = useSelector((state) => state.cart);
   const sidebarRef = useRef(null);
 
   if (!isOpen) return null;
@@ -57,6 +60,21 @@ const CartSidebar = () => {
 
   return (
     <>
+      {loading && (
+        <div className="loading">
+          <div></div>
+        </div>
+      )}
+      {error &&
+        Swl.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.toString(),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/");
+          }
+        })}
       <Overlay onClick={() => dispatch(closeCartSidebar())} />
       <SidebarWrapper className="sidebar-wrapper" ref={sidebarRef}>
         <SidebarHeader>

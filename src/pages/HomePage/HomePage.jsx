@@ -17,14 +17,19 @@ import {
 } from "../../redux/slices/productSlice";
 import { getFavorites } from "../../redux/slices/favoriteSlice";
 import { getCart } from "../../redux/slices/cartSlice";
+import {
+  fetchRecommendations,
+  fetchRecommenProductForUser,
+} from "../../redux/slices/recommenSlice";
 import Roadmap from "../../components/RoadmapComponent/Roadmap";
 import ProductGrid from "./ProductGrid";
 import ProductListSection from "./ProductListSection";
 import CategorySection from "./CategorySection";
 import FeatureSection from "../../components/FeatureComponent/FeatrureSection";
+import ImageGrid from "../../components/FeatureComponent/ImageGrid";
 import ChatBotButton from "../../components/ChatBot/ChatBotButton";
 import { TopBanner } from "./style";
-
+import Swl from "sweetalert2";
 const HomePage = () => {
   const dispatch = useDispatch();
   const gridRef = useRef();
@@ -42,8 +47,22 @@ const HomePage = () => {
     productsPerPage,
     totalPages,
   } = useSelector((state) => state.products);
-  const { favorites } = useSelector((state) => state.favorites) || {};
-  const { user } = useSelector((state) => state.auth);
+  const {
+    favorites,
+    loading: faLoading,
+    error: faError,
+  } = useSelector((state) => state.favorites) || {};
+  const {
+    user,
+    loading: userLoading,
+    error: userError,
+  } = useSelector((state) => state.auth);
+  const {
+    userRecommendations,
+    generalRecommendations,
+    loading: suggestionsLoading,
+    error: suggestionsError,
+  } = useSelector((state) => state.recommendations);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -51,6 +70,10 @@ const HomePage = () => {
       await dispatch(fetchProducts());
       await dispatch(getCart());
       await dispatch(fetchTopProductsByViews(10));
+      await dispatch(fetchRecommendations());
+      if (user) {
+        await dispatch(fetchRecommenProductForUser());
+      }
     };
     loadInitialData();
   }, [dispatch, user]);
@@ -87,28 +110,84 @@ const HomePage = () => {
     [localFeaturedProducts]
   );
   if (!favorites) {
-    alert("Please login to view this page");
+    Swl.fire({
+      icon: "error",
+      title: "Alert",
+      text: "Please login to continue",
+    });
   }
-
+  const memoizedUserRecommendations = useMemo(
+    () => userRecommendations,
+    [userRecommendations]
+  );
+  console.log(
+    "userRecommendations",
+    userRecommendations,
+    memoizedUserRecommendations
+  );
+  const memoizedGeneralRecommendations = useMemo(
+    () => generalRecommendations.map((item) => item.product),
+    [generalRecommendations]
+  );
   const memoizedFavorites = useMemo(() => favorites, [favorites]);
-  console.log(memoizedFavorites);
-  console.log(memoizedFilterProducts);
-  console.log(memoizedTopProducts);
 
   return (
     <div>
-      {loading && (
+      {(loading || faLoading || userLoading) && (
         <div className="loading">
           <div></div>
         </div>
       )}
-      {error && <p>{error}</p>}
+      {(error || faError || userError) &&
+        Swl.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error?.toString(),
+        })}
       <Roadmap />
       <ChatBotButton />
       <div className="container">
-        <TopBanner>
-          <PromoSlider />
-        </TopBanner>
+        <PromoSlider />
+
+        {user && (
+          <ProductGrid
+            ref={gridRef}
+            products={memoizedUserRecommendations}
+            favorites={memoizedFavorites}
+            userSuggest={true}
+          >
+            {suggestionsLoading && (
+              <div className="loading">
+                <div></div>
+              </div>
+            )}
+            {suggestionsError &&
+              Swl.fire({
+                icon: "error",
+                title: "Oops...",
+                text: suggestionsError?.toString(),
+              })}
+          </ProductGrid>
+        )}
+        <ImageGrid />
+        <ProductGrid
+          ref={gridRef}
+          products={memoizedGeneralRecommendations}
+          favorites={memoizedFavorites}
+          userSuggest={false}
+        >
+          {suggestionsLoading && (
+            <div className="loading">
+              <div></div>
+            </div>
+          )}
+          {suggestionsError &&
+            Swl.fire({
+              icon: "error",
+              title: "Oops...",
+              text: suggestionsError?.toString(),
+            })}
+        </ProductGrid>
         <CategorySection />
 
         <ProductListSection
@@ -118,11 +197,6 @@ const HomePage = () => {
           currentPage={currentPage}
           totalPages={totalPages}
           maxItemsPerRow={5}
-          favorites={memoizedFavorites}
-        />
-        <ProductGrid
-          ref={gridRef}
-          products={memoizedTopProducts}
           favorites={memoizedFavorites}
         />
         <FeatureSection />

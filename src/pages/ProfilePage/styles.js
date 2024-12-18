@@ -267,3 +267,46 @@ export const SubmitReviewButton = styled.button`
     background-color: #218838;
   }
 `;
+export const WishlistContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+`;
+
+export const WishlistItem = styled.div`
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: calc(33.333% - 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+export const WishlistImage = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 10px;
+`;
+
+export const WishlistDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const WishlistName = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+`;
+
+export const WishlistPrice = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+`;

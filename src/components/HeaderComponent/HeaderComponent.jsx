@@ -31,7 +31,7 @@ const HeaderComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
-  const cartItems = useSelector((state) => state.cart.items);
+  const total_items = useSelector((state) => state.cart.total_items);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -76,8 +76,6 @@ const HeaderComponent = () => {
     };
   }, []);
 
-  const totalItems = cartItems.length;
-
   return (
     <HeaderContainer>
       <div className="container">
@@ -105,7 +103,7 @@ const HeaderComponent = () => {
                   color: "var(--dark-bg-third)",
                 }}
               />
-              <span className="cart-count">{totalItems}</span>
+              <span className="cart-count">{total_items}</span>
               {/* Dynamic cart item count */}
             </a>
           </ShoppingCart>
@@ -125,30 +123,6 @@ const HeaderComponent = () => {
                           <UserOutlined />
                         </i>{" "}
                         My Account
-                      </Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link to="/orders">
-                        <i className="icon">
-                          <InboxOutlined />
-                        </i>{" "}
-                        My Order
-                      </Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link to="/cancellations">
-                        <i className="icon">
-                          <CloseCircleOutlined />
-                        </i>{" "}
-                        My Cancellations
-                      </Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link to="/reviews">
-                        <i className="icon">
-                          <StarOutlined />
-                        </i>{" "}
-                        My Reviews
                       </Link>
                     </NavItem>
                     <NavItem>

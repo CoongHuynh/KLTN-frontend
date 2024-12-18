@@ -25,8 +25,8 @@ const ProductListSection = ({
       {maxItemsPerRow !== 4 && (
         <Header>
           <div>
-            <h3>Category</h3>
-            <h1>Brower By Category</h1>
+            <h3>Product</h3>
+            <h1>Product Grid</h1>
           </div>
         </Header>
       )}
